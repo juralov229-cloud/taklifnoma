@@ -6,17 +6,41 @@
 <title>Taklifnomalar — AI Blessing Media</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-body{margin:0;min-height:100vh;display:grid;place-items:center;background:#1b1d3a;color:#f7efe2;font:18px Georgia,serif;text-align:center;padding:24px;box-sizing:border-box}
-b{color:#e2bf6e}
+body{margin:0;min-height:100vh;background:#1b1d3a;color:#f7efe2;font:18px Georgia,serif;text-align:center;padding:40px 16px;box-sizing:border-box}
+h1{color:#e2bf6e;font-weight:400;font-size:26px;margin:0 0 6px}
+p{color:#cfc6d6;margin:0 0 24px}
+a.card{display:block;max-width:420px;margin:0 auto 12px;padding:18px;border:1px solid rgba(226,191,110,.5);border-radius:16px;color:#f7efe2;text-decoration:none;background:rgba(255,255,255,.05)}
+a.card b{display:block;font-size:22px;font-weight:400;color:#e2bf6e}
+a.card span{font-size:15px;color:#cfc6d6}
 </style>
 </head>
 <body>
-<div><p><b>AI Blessing Media</b></p><p id="t">Taklifnomalar</p></div>
+<h1>AI Blessing Media</h1>
+<p id="t">Taklifnomalar</p>
+<div id="list"></div>
 <script>
-// Telegram bot havolasi: t.me/BOT/taklif?startapp=joraboy-soliha  ->  ./joraboy-soliha/
+// Yangi taklifnoma qo'shilganda shu ro'yxatga bitta qator qo'shiladi
+var INVITES = [
+  { id: "joraboy-soliha", title: "Jo'raboy & Soliha", date: "2-noyabr, 2026 · Afsona to'yxonasi" }
+];
 var tg = window.Telegram && window.Telegram.WebApp;
-var p = (tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) || new URLSearchParams(location.search).get("t");
-if (p && /^[a-z0-9-]+$/.test(p)) { document.getElementById("t").textContent = "Taklifnoma ochilmoqda…"; location.replace("./" + p + "/" + location.hash); }
+if (tg) { try { tg.ready(); tg.expand(); tg.setHeaderColor("#1b1d3a"); tg.setBackgroundColor("#1b1d3a"); } catch (e) {} }
+function hashParam(k) { var m = location.hash.match(new RegExp("[#&]" + k + "=([^&]*)")); return m ? decodeURIComponent(m[1]) : null; }
+var q = new URLSearchParams(location.search);
+var p = (tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) || q.get("tgWebAppStartParam") || hashParam("tgWebAppStartParam") || q.get("t");
+var keep = location.hash || "";
+if (p && /^[a-z0-9-]+$/.test(p)) {
+  document.getElementById("t").textContent = "Taklifnoma ochilmoqda…";
+  location.replace("./" + p + "/" + keep);
+} else {
+  var box = document.getElementById("list");
+  INVITES.forEach(function (it) {
+    var a = document.createElement("a"); a.className = "card"; a.href = "./" + it.id + "/" + keep;
+    a.innerHTML = "<b></b><span></span>"; a.querySelector("b").textContent = it.title; a.querySelector("span").textContent = it.date;
+    box.appendChild(a);
+  });
+  if (INVITES.length === 1) { document.getElementById("t").textContent = "Taklifnoma ochilmoqda…"; location.replace("./" + INVITES[0].id + "/" + keep); }
+}
 </script>
 </body>
 </html>
